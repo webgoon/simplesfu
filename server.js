@@ -36,20 +36,25 @@ app.post('/consumer', async ({ body }, res) => {
     peer.ontrack = (e) => handleTrackEvent(e, peer);  //<< Not on his git hub
 
     const desc = new webrtc.RTCSessionDescription(body.sdp);
-    console.log('Line 37: desc', desc)
+    console.log('Line 39: desc', JSON.stringify(desc))
     await peer.setRemoteDescription(desc);
     //This is where the sender stream is gonna be sending the incoming senderStrem  back out the other viewer
     //Whenever this is done we wanna use the addTrack method
     // Means we are taking the stream sent to the server by the broadcaster
     // on the other stream we are gonna be running the getTracks method.
-    senderStream.getTracks().forEach(track => peer.addTrack(track, senderStream));
+    try {
+        console.log('Line 46: try gettracks senderStream: ', senderStream)
+        senderStream.getTracks().forEach(track => peer.addTrack(track, senderStream));
+    } catch (error) {
+        console.log('Line 49: error on try gettracks senderStream: ', error)
+    }
 
-    console.log('Line 46: senderStream', senderStream)
+    console.log('Line 52: senderStream', senderStream)
     //console.log('Line 47: track', track)
 
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);
-    console.log('consumer peer answered', peer);
+    console.log('Line 57: consumer peer answered', peer);
 
     const payload = {
         sdp: peer.localDescription
@@ -68,9 +73,15 @@ app.post("/broadcast", async ({ body }, res) => {
             }
         ]
     });
-    const datachannel = peer.createDataChannel("gooniechannel")
+    //const datachannel = peer.createDataChannel("gooniechannel")
+    const datachannel = peer.createDataChannel("sendchannel")
     datachannel.onmessage = e => console.log("just got a message" + e.data)
-    datachannel.onopen = e => console.log("Copnnection Opened")
+    datachannel.onopen = e => console.log("Line79: Connection Opened")
+
+    //now we gotta create an offer
+    peer.onicecandidate = e => console.log("Line 82: New Ice Candidate! reprinting SDP" + JSON.stringify(peer.localDescription))
+    //peer.onicecandidate = e => console.log("New Ice Candidate! reprinting SDP: ", peer.localDescription)
+    //peer.createOffer().then(o => peer.setLocalDescription(o)).then(a=>console.log("set locally successfully for broadcast"))
 
     peer.ontrack = (e) => handleTrackEvent(e, peer);
     const desc = new webrtc.RTCSessionDescription(body.sdp);
@@ -90,9 +101,9 @@ app.post("/broadcast", async ({ body }, res) => {
 
 // Here is where we are attaching the senders stream and attaching it to the senderStream variable
 function handleTrackEvent(e, peer) {
-    console.log('e.streams', e.streams[0])
+    console.log('Line 99: e.streams', e.streams[0])
     senderStream = e.streams[0];
-    console.log('senderStream', senderStream)
+    console.log('Line 101: senderStream', senderStream)
     return senderStream;
    
 

@@ -6,7 +6,7 @@
     <title>Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link href="css/styles.css" rel="stylesheet">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src='viewer.js'></script>
   
@@ -15,6 +15,9 @@
     <h1>Viewer</h1>
     <video class="vel" autoplay id='video' controls></video>
     <button id="my-button" class="btn btn-warning" type="button">View Stream</button>
+
+    <input id="consumer-message" type="text" onchange="handleChange(value)" value="" placeholder="Say something...." />
+    <button id="send-message" type="button">Send Message</button>
 
     
    
