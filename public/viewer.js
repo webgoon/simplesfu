@@ -60,7 +60,7 @@ function createPeer() {
   // The server is now sending us back the stream
   // The stream is the broadcasters stream
   peer.ontrack = handleTrackEvent
-  peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer)
+  peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer).then(a=> console.log("onnegotiationneeded peer.signalingState:", peer.signalingState ))
   console.log('peer: ', peer)
 
   return peer;   //Correct

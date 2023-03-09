@@ -53,7 +53,7 @@ function createPeer() {
   }
 
   // WE need this even because we are the ones intiating the offer
-  peer.onnegotiationneeded = (e) => handleNegotiationNeededEvent(peer)
+  peer.onnegotiationneeded = (e) => handleNegotiationNeededEvent(peer).then(a=> console.log("pc.signalingState:", peer.signalingState ))
   console.log('peer', peer)
   return peer
 }
@@ -63,7 +63,7 @@ async function handleNegotiationNeededEvent(peer) {
   // Where the server is to accept the offer.
 
   const offer = await peer.createOffer()
-  await peer.setLocalDescription(offer).then(a=> console.log("Set  Localal Description Successfully!"))
+  await peer.setLocalDescription(offer)
   const payload = {
       sdp: peer.localDescription
   };
@@ -74,8 +74,6 @@ async function handleNegotiationNeededEvent(peer) {
   // peer.setRemoveDescription is where the server accepts teh answer
   // This where the handshake happens betweenm the browser and the server.
   peer.setRemoteDescription(LocalDescription).catch(e => console.log('offer like setRemoteDescription e:'+e))
-  peer.createAnswer()
-  //.then(a => peer.setLocalDescription(a)).then(a=> console.log("answer created"))
   return
 }
 
