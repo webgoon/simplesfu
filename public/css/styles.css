@@ -1,13 +1,13 @@
 .vel {
     background-color: black;
     border: 1px solid #fff;
-    height: 25%; 
-    width: 25%;
+    height: 100%; 
+    width: 100%;
 }
 
 
 video#video {
     position: relative;
-    display: block;
+    /* display: block; */
     background-color: black;
 }
